@@ -122,26 +122,6 @@ def ReadDataForASeason(year):
     return (Game,GameStatistics,TeamGameStatistics, Stadium)
 
 
-# In[52]:
-
-
-#print(Game[100][1])
-#date1 = try_parsing_date(Game[2][1])
-#date2 = try_parsing_date(Game[100][1])
-
-#if date1 < date2:
-#    print(date1)
-
-#print(date2)
-
-#for i in range(len(Game)):
-#    Game[i][1] = try_parsing_date(Game[i][1])
-
-#Game[150][1]
-
-
-# In[53]:
-
 
 #Assuming no anomolies in game data in TEAMGAMESTATS correspnoding to games in GAME
 #Add fields from TEAMSGAMESTATS in this function
