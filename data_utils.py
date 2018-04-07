@@ -1,19 +1,10 @@
 
-# coding: utf-8
-
-# In[49]:
-
-
+# Core modules
 import csv
 import numpy as np
 from datetime import datetime
 
 pathToData = "data/"
-
-
-# In[50]:
-
-
 
 
 def try_parsing_date(text):
@@ -24,14 +15,8 @@ def try_parsing_date(text):
             pass
     raise ValueError('no valid date format found')
     
-#with open('data-2005/team-game-statistics.csv', 'r') as f:
- # reader = csv.reader(f)
-  #TeamGameStatistics = list(reader)
 
-
-# In[51]:
-
-
+#Reads data from all files for a particular season
 def ReadDataForASeason(year):
     with open(pathToData + str(year) +'/game.csv', 'r') as f:
         reader = csv.reader(f)
@@ -138,10 +123,7 @@ def getTeamGameStatsByID(GameID, TeamGameStatistics, HomeTeam, VisitTeam):
             return(HomeTeamStats,VisitTeamStats)
     print("Loop ended without returning! :( ")
 
-
-# In[54]:
-
-
+#Prepares a dictionary(for next game) to add in list of dictionaries
 def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadium):
     newGame = {}
     #newGame['Date'] = try_parsing_date(singleGame[1])
@@ -161,10 +143,9 @@ def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadi
     #GameList.append(newGame)
     return newGame
 
-
-# In[55]:
-
-
+	
+	
+#Prepares gamelist and teamlist for a specified year
 def prepareGameAndTeamList(year):
     Game, GameStatistics, TeamGameStatistics, Stadium = ReadDataForASeason(year)
     GameList = [] #List of dictionaries, based on sorted order of games
@@ -189,15 +170,8 @@ def prepareGameAndTeamList(year):
     return GameList, TeamList
 
 
-# In[56]:
-
-
-#GameList[6]
-
-
-# In[75]:
-
-
+	
+#Generates X_data and Y_data for a specific year
 def getFeatures(year):
     
     GameList, TeamList = prepareGameAndTeamList(year)
@@ -274,10 +248,7 @@ def getFeatures(year):
     return X_train, Y_train 
 
 
-# In[104]:
-
-
-
+#Creates data for a specific season
 def createData(SeasonList):
     X_train = []
     Y_train = []
