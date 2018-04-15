@@ -231,13 +231,13 @@ def getFeatures(year):
         temp.append(PointDifference[htindex])
         temp.append(PointDifference[vtindex])
         X_train.append(temp)
-        if(game['HTStats'][35] >= game['HTStats'][35]):
+        if(game['HTStats'][35] >= game['VTStats'][35]):
             Y_train.append(1)
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
             Y_train.append(0)
             NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1
-        point_difference = game['HTStats'][35] - game['HTStats'][35]
+        point_difference = game['HTStats'][35] - game['VTStats'][35]
         PointDifference[htindex] += point_difference
         PointDifference[vtindex] -= point_difference 
         NumberOfMatches[vtindex] = NumberOfMatches[vtindex] + 1
@@ -258,8 +258,8 @@ def createData(SeasonList):
         X_train = X_train + x
         Y_train = Y_train + y
         
-  #  X_train = np.array(X_train)
-  #  Y_train = np.array(Y_train)
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
     
     return X_train, Y_train
         
