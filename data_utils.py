@@ -122,6 +122,18 @@ def getTeamGameStatsByID(GameID, TeamGameStatistics, HomeTeam, VisitTeam):
         if(count == 2):
             return(HomeTeamStats,VisitTeamStats)
     print("Loop ended without returning! :( ")
+   
+#Gives Stadium Info stats based on the ID from the stadium list
+def getStadiumInfoByID(id, StadiumList):
+    
+    for i in range(len(StadiumList)):
+        if id == StadiumList[i][0]:
+            #Debug print
+            #print("found stadium with id",id)
+            return StadiumList[i]
+        
+    print("Error getting Stadium info")
+    return -1
 
 #Prepares a dictionary(for next game) to add in list of dictionaries
 def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadium):
@@ -139,7 +151,8 @@ def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadi
     #newGame['VTStats'] = VisitTeamStats
     newGame['HTStats'] = list(map(float,HomeTeamStats))
     newGame['VTStats'] = list(map(float,VisitTeamStats))
-    newGame['Capacity'] = Stadium[int(singleGame[4])-1][4]
+    stadiumInfo = getStadiumInfoByID(singleGame[4], Stadium)
+    newGame['Capacity'] = stadiumInfo[4]
     #GameList.append(newGame)
     return newGame
 
