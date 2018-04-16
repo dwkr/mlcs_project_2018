@@ -1,15 +1,10 @@
 
-
-
 # Core modules
 import csv
 import numpy as np
 from datetime import datetime
-import numpy
 
-numpy.set_printoptions(threshold=numpy.nan)
-
-pathToData = "data/"
+pathToData = "/Users/tejallotlikar/Downloads/data/"
 
 
 def try_parsing_date(text):
@@ -127,7 +122,7 @@ def getTeamGameStatsByID(GameID, TeamGameStatistics, HomeTeam, VisitTeam):
         if(count == 2):
             return(HomeTeamStats,VisitTeamStats)
     print("Loop ended without returning! :( ")
-
+   
 #Gives Stadium Info stats based on the ID from the stadium list
 def getStadiumInfoByID(id, StadiumList):
     
@@ -161,7 +156,8 @@ def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadi
     #GameList.append(newGame)
     return newGame
 
-
+	
+	
 #Prepares gamelist and teamlist for a specified year
 def prepareGameAndTeamList(year):
     Game, GameStatistics, TeamGameStatistics, Stadium = ReadDataForASeason(year)
@@ -248,7 +244,7 @@ def getFeatures(year):
             temp.append(0.0)
         temp.append(PointDifference[htindex])
         temp.append(PointDifference[vtindex])
-        ####################################
+        
         HT_time_of_poss = game['HTStats'][58]  
         VT_time_of_poss = game['VTStats'][58]
         HT_penalty = game['HTStats'][59]
@@ -257,13 +253,12 @@ def getFeatures(year):
         VT_Kickoff_yard = game['VTStats'][39]
         temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard))
         
-        
         X_train.append(temp)
         if(game['HTStats'][35] >= game['VTStats'][35]):
-            temp_y.append(1)
+            temp_y.append(1)#Y_train.append(1)
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
-            temp_y.append(0)
+            temp_y.append(0)#Y_train.append(0)
             NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1
         point_difference = game['HTStats'][35] - game['VTStats'][35]
         temp_y.append(point_difference)
@@ -292,7 +287,4 @@ def createData(SeasonList):
     Y_train = np.array(Y_train)
     
     return X_train, Y_train
-
-
-
 
