@@ -4,7 +4,7 @@ import csv
 import numpy as np
 from datetime import datetime
 
-pathToData = "data/"
+pathToData = "/Users/tejallotlikar/Downloads/data/"
 
 
 def try_parsing_date(text):
@@ -224,6 +224,7 @@ def getFeatures(year):
     gamecount = 0
     for i,game in enumerate(GameList[100:]):
         temp = []
+        temp_y = []
         gamecount = gamecount + 1
         #print("For ",i,": ")
         #print(game)
@@ -243,14 +244,25 @@ def getFeatures(year):
             temp.append(0.0)
         temp.append(PointDifference[htindex])
         temp.append(PointDifference[vtindex])
+        
+        HT_time_of_poss = game['HTStats'][58]  
+        VT_time_of_poss = game['VTStats'][58]
+        HT_penalty = game['HTStats'][59]
+        VT_penalty = game['VTStats'][59]
+        HT_Kickoff_yard = game['HTStats'][39]
+        VT_Kickoff_yard = game['VTStats'][39]
+        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard))
+        
         X_train.append(temp)
         if(game['HTStats'][35] >= game['VTStats'][35]):
-            Y_train.append(1)
+            temp_y.append(1)#Y_train.append(1)
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
-            Y_train.append(0)
+            temp_y.append(0)#Y_train.append(0)
             NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1
         point_difference = game['HTStats'][35] - game['VTStats'][35]
+        temp_y.append(point_difference)
+        Y_train.append(temp_y)
         PointDifference[htindex] += point_difference
         PointDifference[vtindex] -= point_difference 
         NumberOfMatches[vtindex] = NumberOfMatches[vtindex] + 1
@@ -275,4 +287,4 @@ def createData(SeasonList):
     Y_train = np.array(Y_train)
     
     return X_train, Y_train
-        
+
