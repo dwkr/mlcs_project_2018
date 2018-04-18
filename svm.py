@@ -74,6 +74,101 @@ class Svm(object):
         return  lossOnTrain, lossOnTest, accuracyTrain, accuracyTest, correctPredictionsTrain, correctPredictionsTest
     
     def baseline_2(self, X_TRAIN, Y_TRAIN, X_TEST, Y_TEST, num_epochs =1000, learning_rate = 0.001, num_classes=1):        
+        X = X_TRAIN[:,0:4]
+        y=Y_TRAIN[:,0]
+
+        titles = ['SVC with linear kernel','LinearSVC (linear kernel)','SVC with RBF kernel','SVC with polynomial (degree 3) kernel']
+    
+        SVC_C = 0.1
+        clf = svm.SVC(kernel='linear', C=SVC_C,  max_iter=num_epochs)
+        clf.fit(X, y) 
+        pred = clf.predict(X_TEST[:,0:4])
+        
+        print ("\nSVC")
+        accuracyTest = accuracy_score(Y_TEST[:,0], pred)
+        print ( "Accuracy on Test Data:", accuracyTest)#, normalize=False))
+        correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
+        print ("Correct Predictions on Test Data:", correctPredictionsTest)
+        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        print ("Hinge Loss on Test Data", lossOnTest)
+        
+        predt = clf.predict(X_TRAIN[:,0:4])
+        accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
+        print ( "Accuracy on Train Data:", accuracyTrain)
+        correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
+        print ("Correct Predictions on Train Data:", correctPredictionsTrain)
+        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        print ("Hinge Loss on Train Data", lossOnTrain)
+    
+    
+        LIN_C = 1.0
+        clf = svm.LinearSVC(C=LIN_C).fit(X, y)
+        clf.fit(X, y) 
+        pred = clf.predict(X_TEST[:,0:4])
+        
+        print ("\nLinear SVC")
+        accuracyTest = accuracy_score(Y_TEST[:,0], pred)
+        print ( "Accuracy on Test Data:", accuracyTest)
+        correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
+        print ("Correct Predictions on Test Data:", correctPredictionsTest)
+        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        print ("Hinge Loss on Test Data", lossOnTest)
+        
+        predt = clf.predict(X_TRAIN[:,0:4])
+        accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
+        print ( "Accuracy on Train Data:", accuracyTrain)
+        correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
+        print ("Correct Predictions on Train Data:", correctPredictionsTrain)
+        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        print ("Hinge Loss on Train Data", lossOnTrain)
+    
+     
+        RBF_C = 0.1
+        clf = svm.SVC(kernel='rbf', gamma=0.7, C=RBF_C).fit(X, y)
+        clf.fit(X, y) 
+        pred = clf.predict(X_TEST[:,0:4])
+        
+        print ("\nRBF Kernel")
+        accuracyTest = accuracy_score(Y_TEST[:,0], pred)
+        print ( "Accuracy on Test Data:", accuracyTest)
+        correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
+        print ("Correct Predictions on Test Data:", correctPredictionsTest)
+        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        print ("Hinge Loss on Test Data", lossOnTest)
+        
+        predt = clf.predict(X_TRAIN[:,0:4])
+        accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
+        print ( "Accuracy on Train Data:", accuracyTrain)
+        correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
+        print ("Correct Predictions on Train Data:", correctPredictionsTrain)
+        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        print ("Hinge Loss on Train Data", lossOnTrain)
+    
+    
+        POLY_C = 1
+        clf = svm.SVC(kernel='poly', degree=1, C=POLY_C).fit(X, y)
+        clf.fit(X, y) 
+        pred = clf.predict(X_TEST[:,0:4])
+        
+        print("\nPolynomial")
+        accuracyTest = accuracy_score(Y_TEST[:,0], pred)
+        print ( "Accuracy on Test Data:", accuracyTest)#, normalize=False))
+        correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
+        print ("Correct Predictions on Test Data:", correctPredictionsTest)
+        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        print ("Hinge Loss on Test Data", lossOnTest)
+        
+        predt = clf.predict(X_TRAIN[:,0:4])
+        accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
+        print ( "Accuracy on Train Data:", accuracyTrain)#, normalize=False))
+        correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
+        print ("Correct Predictions on Train Data:", correctPredictionsTrain)
+        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        print ("Hinge Loss on Train Data", lossOnTrain)
+    
+        return  lossOnTrain, lossOnTest, accuracyTrain, accuracyTest, correctPredictionsTrain, correctPredictionsTest
+
+    def baseline_n(self, X_TRAIN, Y_TRAIN, X_TEST, Y_TEST, num_epochs =1000, learning_rate = 0.001, num_classes=1):        
         X = X_TRAIN
         y=Y_TRAIN[:,0]
 
@@ -167,6 +262,11 @@ class Svm(object):
         print ("Hinge Loss on Train Data", lossOnTrain)
     
         return  lossOnTrain, lossOnTest, accuracyTrain, accuracyTest, correctPredictionsTrain, correctPredictionsTest
+
+
+    
+
+
 
 ############CALL###############
 s = Svm()
