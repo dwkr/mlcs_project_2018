@@ -62,7 +62,7 @@ X_DATA,Y_DATA = createData(season_list, args.path_to_data)
 #Baseline1:
 #X_DATA = X_DATA[:,:2]
 Y_DATA = Y_DATA[:,:1]
-split_index = 2880
+split_index = int(args.split_ratio * X_DATA.shape[0])
 
 X_test = X_DATA[split_index:]
 X_train = X_DATA[:split_index]
@@ -70,22 +70,20 @@ Y_test = Y_DATA[split_index:]
 Y_train = Y_DATA[:split_index]
 
 
-func = run_neural_network
+learningModel = run_neural_network
 
 if(args.algorithm == "LR"):
-    func = runLogRegression
+    learningModel = runLogRegression
 elif(args.algorithm == "SVM"):
-    func = Svm().baseline_2
-    
+    learningModel = Svm().baseline_2
+else:
+    learningModel = run_neural_network
+
+print("Model Selected",learningModel)
+
+loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = learningModel(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
 
 
-loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = run_neural_network(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
-"""
-loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = runLogRegression(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
-
-
-loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = s.baseline_2(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
-"""
 print("Training Loss: ",loss_train)
 print("Test Loss: ",loss_test) 
 print("Training Accuracy: ",accuracy_train)
