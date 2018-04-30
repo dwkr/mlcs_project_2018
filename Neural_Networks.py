@@ -5,7 +5,7 @@ from torch import autograd,nn, optim
 import torch.nn.functional as F
 
 
-def run_neural_network(X_train, Y_train, X_test, Y_test, num_epochs=1000, learning_rate=0.001, num_classes=1, hidden_size=50):
+def run_neural_network(X_train, Y_train, X_test, Y_test, num_epochs=100, learning_rate=0.001, num_classes=1, hidden_size=50):
 
     input_size = X_train.shape[1]
     #input = autograd.Variable(torch.rand(batch_size,input_size)
@@ -43,7 +43,7 @@ def run_neural_network(X_train, Y_train, X_test, Y_test, num_epochs=1000, learni
     # In[13]:
 
 
-    for epoch in range(500):
+    for epoch in range(num_epochs):
         out = model(model_input)
         #print(out)
         #_, pred = out.max(1)

@@ -4,7 +4,7 @@ import csv
 import numpy as np
 from datetime import datetime
 
-pathToData = "/Users/tejallotlikar/Downloads/data/"
+pathToData = "data/"
 
 
 def try_parsing_date(text):
@@ -274,10 +274,10 @@ def getFeatures(year):
 
 
 #Creates data for a specific season
-def createData(SeasonList):
+def createData(SeasonList, path):
     X_train = []
     Y_train = []
-    
+    pathToData = path
     for year in SeasonList:
         x, y = getFeatures(year)
         X_train = X_train + x

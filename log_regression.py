@@ -4,14 +4,13 @@
 # In[1]:
 
 
-from data_utils import *
 from torch.autograd import Variable
 import torch.nn.functional as F
 import torch
 from torch import autograd,nn, optim
 import numpy as np
 
-
+"""
 # In[2]:
 
 
@@ -44,7 +43,7 @@ Y_train = Y_data[:splitIndex]
 print(Y_train)
 print(X_test)
 
-
+"""
 # In[5]:
 
 
@@ -138,5 +137,5 @@ def runLogRegression(X_train, Y_train, X_test, Y_test, num_epochs=1000, learning
 # In[6]:
 
 
-runLogRegression(X_train, Y_train, X_test, Y_test)
+#runLogRegression(X_train, Y_train, X_test, Y_test)
 
