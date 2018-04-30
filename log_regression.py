@@ -50,10 +50,7 @@ print(X_test)
 def runLogRegression(X_train, Y_train, X_test, Y_test, num_epochs=1000, learning_rate=0.001, num_classes=1):
         # Hyper Parameters 
     input_size = X_train.shape[1]
-    num_classes = 1
-    num_epochs = 1000
     batch_size = X_train.shape[0]
-    learning_rate = 0.001
     
     train_input = Variable(torch.Tensor(X_train))
     train_target = Variable(torch.Tensor(Y_train).long())

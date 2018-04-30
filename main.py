@@ -58,9 +58,20 @@ print("Algo -------->", args.algorithm)
 
 
 season_list = [2005,2006,2007,2008,2009,2010,2011]
+#season_list = [2005,2006]
+
 X_DATA,Y_DATA = createData(season_list, args.path_to_data)
+
+print("X-DATA: ", X_DATA.shape)
+print("Y-DATA: ", Y_DATA.shape)
 #Baseline1:
-#X_DATA = X_DATA[:,:2]
+indicator_col = X_DATA[:,10:11]
+print("ind: ", indicator_col.shape)
+
+X_DATA = X_DATA[:,:2]
+X_DATA = np.concatenate((X_DATA,indicator_col), axis=1)
+print("X-DATA: ", X_DATA.shape)
+
 Y_DATA = Y_DATA[:,:1]
 split_index = int(args.split_ratio * X_DATA.shape[0])
 

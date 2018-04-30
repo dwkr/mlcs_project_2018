@@ -192,6 +192,7 @@ def getFeatures(year):
     NumberOfWins = np.zeros(len(TeamList))
     NumberOfMatches = np.zeros(len(TeamList))
     PointDifference = np.zeros(len(TeamList))
+    Indicator = np.zeros(len(TeamList))
     
     #Skip first 100 games
     gamecount = 0
@@ -202,6 +203,9 @@ def getFeatures(year):
         NumberOfMatches[htindex] = NumberOfMatches[htindex] + 1
         NumberOfMatches[vtindex] = NumberOfMatches[vtindex] + 1
         point_difference = game['HTStats'][35] - game['VTStats'][35]
+        #game['HTStats'][35]  ----> points of home team
+        Indicator[htindex] += game['HTStats'][35]
+        Indicator[vtindex] += game['VTStats'][35]
         PointDifference[htindex] += point_difference
         PointDifference[vtindex] -= point_difference 
         if(game['HTStats'][35] >= game['VTStats'][35]):
@@ -230,6 +234,7 @@ def getFeatures(year):
         #print(game)
         htindex = TeamList.index(game['HomeTeam'])
         vtindex = TeamList.index(game['VisitTeam'])
+        
         #print(NumberOfWins[htindex])
         #print(NumberOfMatches[htindex])
         #print(NumberOfWins[vtindex])
@@ -245,13 +250,17 @@ def getFeatures(year):
         temp.append(PointDifference[htindex])
         temp.append(PointDifference[vtindex])
         
+        Indicator[htindex] += game['HTStats'][35]
+        Indicator[vtindex] += game['VTStats'][35]
         HT_time_of_poss = game['HTStats'][58]  
         VT_time_of_poss = game['VTStats'][58]
         HT_penalty = game['HTStats'][59]
         VT_penalty = game['VTStats'][59]
         HT_Kickoff_yard = game['HTStats'][39]
         VT_Kickoff_yard = game['VTStats'][39]
-        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard))
+        indicator = Indicator[htindex]/(1 + NumberOfMatches[htindex]) - Indicator[vtindex]/(1 + NumberOfMatches[vtindex])
+        
+        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard, indicator))
         
         X_train.append(temp)
         if(game['HTStats'][35] >= game['VTStats'][35]):
