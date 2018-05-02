@@ -99,7 +99,7 @@ print("Model Selected",learningModel)
 
 loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = learningModel(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
 
-
+print("Num of Features", X_train.shape[1])
 print("Training Loss: ",loss_train)
 print("Test Loss: ",loss_test) 
 print("Training Accuracy: ",accuracy_train)
