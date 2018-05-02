@@ -2,10 +2,12 @@ from sklearn import datasets
 from sklearn import svm
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, hinge_loss
+from sklearn.metrics import accuracy_score, hinge_loss, log_loss
 from sklearn.svm import SVC
 from data_utils import *
-
+import torch.nn.functional as F
+from torch import autograd,nn, optim
+import torch
 
 class Svm(object):
     from sklearn.svm import LinearSVC, SVC
@@ -17,13 +19,13 @@ class Svm(object):
         rbf_C = 0.1
         poly_C =1
         # SVC with linear kernel
-        svc = svm.SVC(kernel='linear', C=svc_C).fit(X, y)
+        svc = svm.SVC(kernel='linear', C=svc_C, probability=True).fit(X, y)
         # LinearSVC (linear kernel)
         lin_svc = svm.LinearSVC(C=lin_C).fit(X, y)
         # SVC with RBF kernel
-        rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=rbf_C).fit(X, y)
+        rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=rbf_C, probability=True).fit(X, y)
         # SVC with polynomial (degree 3) kernel
-        poly_svc = svm.SVC(kernel='poly', degree=2, C=poly_C).fit(X, y)
+        poly_svc = svm.SVC(kernel='poly', degree=2, C=poly_C, probability=True).fit(X, y)
 
         h = .02  # step size parameter in the mesh
         # create a mesh to plot in
@@ -46,6 +48,12 @@ class Svm(object):
             print ("Correct Predictions on Test Data:", correctPredictionsTest)
             lossOnTest = hinge_loss(Y_TEST[:,0], pred)
             print ("Hinge Loss on Test Data", lossOnTest)
+            if(i!=1):
+                print(clf.predict_proba(X_TEST[:,:2])[:,1])
+                print(Y_TEST[:,0])
+                pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TEST[:,:2])[:,1]))
+                truelabel = autograd.Variable(torch.Tensor(Y_TEST[:,0]))
+                print("Binary Cross Entropy on Test Data",F.binary_cross_entropy(pred, truelabel))
             
             predt = clf.predict(X_TRAIN[:,:2])
             accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
@@ -54,6 +62,12 @@ class Svm(object):
             print ("Correct Predictions on Train Data:", correctPredictionsTrain)
             lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
             print ("Hinge Loss on Train Data", lossOnTrain)
+            if(i!=1):
+                pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TRAIN[:,:2])[:,1]))
+                print(len(pred))
+                truelabel = autograd.Variable(torch.Tensor(Y_TRAIN[:,0]))
+                print(len(truelabel))
+                print("Binary Cross Entropy on Train Data",F.binary_cross_entropy(pred, truelabel))
 
             Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
 
@@ -73,38 +87,51 @@ class Svm(object):
             plt.show()
         return  lossOnTrain, lossOnTest, accuracyTrain, accuracyTest, correctPredictionsTrain, correctPredictionsTest
     
-    def baseline_2(self, X_TRAIN, Y_TRAIN, X_TEST, Y_TEST, num_epochs =1000, learning_rate = 0.001, num_classes=1):        
-        X = X_TRAIN[:,0:4]
+    def run_svm(self, X_TRAIN, Y_TRAIN, X_TEST, Y_TEST, num_epochs =1000, learning_rate = 0.001, num_classes=1):        
+        X = X_TRAIN
         y=Y_TRAIN[:,0]
+
 
         titles = ['SVC with linear kernel','LinearSVC (linear kernel)','SVC with RBF kernel','SVC with polynomial (degree 3) kernel']
     
         SVC_C = 0.1
-        clf = svm.SVC(kernel='linear', C=SVC_C,  max_iter=num_epochs)
+        clf = svm.SVC(kernel='linear', C=SVC_C,  max_iter=num_epochs, probability = True)
         clf.fit(X, y) 
-        pred = clf.predict(X_TEST[:,0:4])
+        pred = clf.predict(X_TEST)
         
         print ("\nSVC")
         accuracyTest = accuracy_score(Y_TEST[:,0], pred)
         print ( "Accuracy on Test Data:", accuracyTest)#, normalize=False))
         correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
         print ("Correct Predictions on Test Data:", correctPredictionsTest)
-        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
-        print ("Hinge Loss on Test Data", lossOnTest)
+        #lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        #print ("Hinge Loss on Test Data", lossOnTest)
+        print(len(clf.predict_proba(X_TEST)[:,1]))
+        print(len(Y_TEST))
         
-        predt = clf.predict(X_TRAIN[:,0:4])
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TEST)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TEST[:,0]))
+        lossOnTest = F.binary_cross_entropy(pred, truelabel)
+        #print("Binary Cross Entropy on Test Data",F.binary_cross_entropy(pred, truelabel))
+
+
+        predt = clf.predict(X_TRAIN)
         accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
         print ( "Accuracy on Train Data:", accuracyTrain)
         correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
         print ("Correct Predictions on Train Data:", correctPredictionsTrain)
-        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
-        print ("Hinge Loss on Train Data", lossOnTrain)
+        #lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        #print ("Hinge Loss on Train Data", lossOnTrain)
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TRAIN)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TRAIN[:,0]))
+        lossOnTrain = F.binary_cross_entropy(pred, truelabel)
+        print("Binary Cross Entropy on Train Data",F.binary_cross_entropy(pred, truelabel))
     
     
         LIN_C = 1.0
         clf = svm.LinearSVC(C=LIN_C).fit(X, y)
         clf.fit(X, y) 
-        pred = clf.predict(X_TEST[:,0:4])
+        pred = clf.predict(X_TEST)
         
         print ("\nLinear SVC")
         accuracyTest = accuracy_score(Y_TEST[:,0], pred)
@@ -113,63 +140,86 @@ class Svm(object):
         print ("Correct Predictions on Test Data:", correctPredictionsTest)
         lossOnTest = hinge_loss(Y_TEST[:,0], pred)
         print ("Hinge Loss on Test Data", lossOnTest)
+        #pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TEST)[:,1]))
+        #truelabel = autograd.Variable(torch.Tensor(Y_TEST[:,0]))
+        #print("Binary Cross Entropy on Test Data",F.binary_cross_entropy(pred, truelabel))
         
-        predt = clf.predict(X_TRAIN[:,0:4])
+        predt = clf.predict(X_TRAIN)
         accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
         print ( "Accuracy on Train Data:", accuracyTrain)
         correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
         print ("Correct Predictions on Train Data:", correctPredictionsTrain)
         lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
         print ("Hinge Loss on Train Data", lossOnTrain)
+        #pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TRAIN)[:,1]))
+        #truelabel = autograd.Variable(torch.Tensor(Y_TRAIN[:,0]))
+        #print("Binary Cross Entropy on Train Data",F.binary_cross_entropy(pred, truelabel))
     
      
         RBF_C = 0.1
-        clf = svm.SVC(kernel='rbf', gamma=0.7, C=RBF_C).fit(X, y)
+        clf = svm.SVC(kernel='rbf', gamma=0.7, C=RBF_C,  probability=True).fit(X, y)
         clf.fit(X, y) 
-        pred = clf.predict(X_TEST[:,0:4])
+        pred = clf.predict(X_TEST)
         
         print ("\nRBF Kernel")
         accuracyTest = accuracy_score(Y_TEST[:,0], pred)
         print ( "Accuracy on Test Data:", accuracyTest)
         correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
         print ("Correct Predictions on Test Data:", correctPredictionsTest)
-        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
-        print ("Hinge Loss on Test Data", lossOnTest)
+        #lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        #print ("Hinge Loss on Test Data", lossOnTest)
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TEST)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TEST[:,0]))
+        lossOnTest = F.binary_cross_entropy(pred, truelabel)
+        print("Binary Cross Entropy on Test Data",F.binary_cross_entropy(pred, truelabel))
         
-        predt = clf.predict(X_TRAIN[:,0:4])
+        predt = clf.predict(X_TRAIN)
         accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
         print ( "Accuracy on Train Data:", accuracyTrain)
         correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
         print ("Correct Predictions on Train Data:", correctPredictionsTrain)
-        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
-        print ("Hinge Loss on Train Data", lossOnTrain)
-    
-    
+        #lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        #print ("Hinge Loss on Train Data", lossOnTrain)
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TRAIN)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TRAIN[:,0]))
+        lossOnTrain = F.binary_cross_entropy(pred, truelabel)
+        print("Binary Cross Entropy on Train Data",F.binary_cross_entropy(pred, truelabel))
+              
+              
         POLY_C = 1
-        clf = svm.SVC(kernel='poly', degree=1, C=POLY_C).fit(X, y)
+        clf = svm.SVC(kernel='poly', degree=1, C=POLY_C, probability = True).fit(X, y)
         clf.fit(X, y) 
-        pred = clf.predict(X_TEST[:,0:4])
+        pred = clf.predict(X_TEST)
         
         print("\nPolynomial")
         accuracyTest = accuracy_score(Y_TEST[:,0], pred)
         print ( "Accuracy on Test Data:", accuracyTest)#, normalize=False))
         correctPredictionsTest = accuracy_score(Y_TEST[:,0], pred, normalize = False)
         print ("Correct Predictions on Test Data:", correctPredictionsTest)
-        lossOnTest = hinge_loss(Y_TEST[:,0], pred)
-        print ("Hinge Loss on Test Data", lossOnTest)
+        #lossOnTest = hinge_loss(Y_TEST[:,0], pred)
+        #print ("Hinge Loss on Test Data", lossOnTest)
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TEST)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TEST[:,0]))
+        lossOnTest = F.binary_cross_entropy(pred, truelabel)
+        print("Binary Cross Entropy on Test Data",F.binary_cross_entropy(pred, truelabel))
         
-        predt = clf.predict(X_TRAIN[:,0:4])
+        predt = clf.predict(X_TRAIN)
         accuracyTrain = accuracy_score(Y_TRAIN[:,0], predt)
         print ( "Accuracy on Train Data:", accuracyTrain)#, normalize=False))
         correctPredictionsTrain = accuracy_score(Y_TRAIN[:,0], predt, normalize = False)
         print ("Correct Predictions on Train Data:", correctPredictionsTrain)
-        lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
-        print ("Hinge Loss on Train Data", lossOnTrain)
+        #lossOnTrain = hinge_loss(Y_TRAIN[:,0], predt)
+        #print ("Hinge Loss on Train Data", lossOnTrain)
+        pred = autograd.Variable(torch.Tensor(clf.predict_proba(X_TRAIN)[:,1]))
+        truelabel = autograd.Variable(torch.Tensor(Y_TRAIN[:,0]))
+        lossOnTrain = F.binary_cross_entropy(pred, truelabel)
+        print("Binary Cross Entropy on Train Data",F.binary_cross_entropy(pred, truelabel))
     
         return  lossOnTrain, lossOnTest, accuracyTrain, accuracyTest, correctPredictionsTrain, correctPredictionsTest
 
 
 
     
+
 
 
