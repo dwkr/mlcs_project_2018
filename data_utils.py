@@ -5,6 +5,21 @@ import numpy as np
 from datetime import datetime
 
 pathToData = "data/"
+# MACROS
+GMEGAMECODE = 0 # Game Game Code
+GMEDATE = 1 # Game Date
+GMEVISITTEAMCODE = 2 # Game Visit Team Code
+GMEHOMETEAMCODE = 3 # Game Home Team Code
+GMESTADIUMCODE = 4 # Game Stadium Code
+GMSGAMECODE = 0 # Game Stats Game Code
+GMSATTENDANCE = 1 # Game Stats Attendance
+GMSDURATION = 2 # Game Stats Duration
+STDSTADIUMCODE = 0 # Stadium Stadium Code
+STDCAPACITY = 4 # Stadium Capacity
+TGSPOINTS = 35 # Team Game Stats Points
+TGSTIMEOFPOSS = 58 # Team Game Stats Time of Possesion
+TGSPENALTY = 59 # Team Game Stats Penalty
+TGSKICKOFFYARD = 39 # Team Game Stats Kick off yard
 
 
 def try_parsing_date(text):
@@ -127,7 +142,7 @@ def getTeamGameStatsByID(GameID, TeamGameStatistics, HomeTeam, VisitTeam):
 def getStadiumInfoByID(id, StadiumList):
     
     for i in range(len(StadiumList)):
-        if id == StadiumList[i][0]:
+        if id == StadiumList[i][STDSTADIUMCODE]:
             #Debug print
             #print("found stadium with id",id)
             return StadiumList[i]
@@ -139,20 +154,20 @@ def getStadiumInfoByID(id, StadiumList):
 def getNextGameStats(singleGame, singleGameStatistics, TeamGameStatistics, Stadium):
     newGame = {}
     #newGame['Date'] = try_parsing_date(singleGame[1])
-    newGame['Date'] = singleGame[1]
-    newGame['GameID'] = singleGame[0]
-    newGame['Attendance'] = singleGameStatistics[1]
+    newGame['Date'] = singleGame[GMEDATE]
+    newGame['GameID'] = singleGame[GMEGAMECODE]
+    newGame['Attendance'] = singleGameStatistics[GMSATTENDANCE]
     #print(GameStatistics[2])
-    newGame['Duration'] = singleGameStatistics[2]
-    newGame['HomeTeam'] = int(singleGame[3])
-    newGame['VisitTeam'] = int(singleGame[2])
-    HomeTeamStats, VisitTeamStats = getTeamGameStatsByID(singleGame[0],TeamGameStatistics,singleGame[3],singleGame[2])
+    newGame['Duration'] = singleGameStatistics[GMSDURATION]
+    newGame['HomeTeam'] = int(singleGame[GMEHOMETEAMCODE])
+    newGame['VisitTeam'] = int(singleGame[GMEVISITTEAMCODE])
+    HomeTeamStats, VisitTeamStats = getTeamGameStatsByID(singleGame[GMEGAMECODE],TeamGameStatistics,singleGame[GMEHOMETEAMCODE],singleGame[GMEVISITTEAMCODE])
     #newGame['HTStats'] = HomeTeamStats
     #newGame['VTStats'] = VisitTeamStats
     newGame['HTStats'] = list(map(float,HomeTeamStats))
     newGame['VTStats'] = list(map(float,VisitTeamStats))
-    stadiumInfo = getStadiumInfoByID(singleGame[4], Stadium)
-    newGame['Capacity'] = stadiumInfo[4]
+    stadiumInfo = getStadiumInfoByID(singleGame[GMESTADIUMCODE], Stadium)
+    newGame['Capacity'] = stadiumInfo[STDCAPACITY]
     #GameList.append(newGame)
     return newGame
 
@@ -202,13 +217,13 @@ def getFeatures(year):
         vtindex = TeamList.index(game['VisitTeam'])
         NumberOfMatches[htindex] = NumberOfMatches[htindex] + 1
         NumberOfMatches[vtindex] = NumberOfMatches[vtindex] + 1
-        point_difference = game['HTStats'][35] - game['VTStats'][35]
+        point_difference = game['HTStats'][TGSPOINTS] - game['VTStats'][TGSPOINTS]
         #game['HTStats'][35]  ----> points of home team
-        Indicator[htindex] += game['HTStats'][35]
-        Indicator[vtindex] += game['VTStats'][35]
+        Indicator[htindex] += game['HTStats'][TGSPOINTS]
+        Indicator[vtindex] += game['VTStats'][TGSPOINTS]
         PointDifference[htindex] += point_difference
         PointDifference[vtindex] -= point_difference 
-        if(game['HTStats'][35] >= game['VTStats'][35]):
+        if(game['HTStats'][TGSPOINTS] >= game['VTStats'][TGSPOINTS]):
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
             NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1       
@@ -250,26 +265,26 @@ def getFeatures(year):
         temp.append(PointDifference[htindex])
         temp.append(PointDifference[vtindex])
         
-        Indicator[htindex] += game['HTStats'][35]
-        Indicator[vtindex] += game['VTStats'][35]
-        HT_time_of_poss = game['HTStats'][58]  
-        VT_time_of_poss = game['VTStats'][58]
-        HT_penalty = game['HTStats'][59]
-        VT_penalty = game['VTStats'][59]
-        HT_Kickoff_yard = game['HTStats'][39]
-        VT_Kickoff_yard = game['VTStats'][39]
+        Indicator[htindex] += game['HTStats'][TGSPOINTS]
+        Indicator[vtindex] += game['VTStats'][TGSPOINTS]
+        HT_time_of_poss = game['HTStats'][TGSTIMEOFPOSS]  
+        VT_time_of_poss = game['VTStats'][TGSTIMEOFPOSS]
+        HT_penalty = game['HTStats'][TGSPENALTY]
+        VT_penalty = game['VTStats'][TGSPENALTY]
+        HT_Kickoff_yard = game['HTStats'][TGSKICKOFFYARD]
+        VT_Kickoff_yard = game['VTStats'][TGSKICKOFFYARD]
         indicator = Indicator[htindex]/(1 + NumberOfMatches[htindex]) - Indicator[vtindex]/(1 + NumberOfMatches[vtindex])
         
         temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard, indicator))
         
         X_train.append(temp)
-        if(game['HTStats'][35] >= game['VTStats'][35]):
+        if(game['HTStats'][TGSPOINTS] >= game['VTStats'][TGSPOINTS]):
             temp_y.append(1)#Y_train.append(1)
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
             temp_y.append(0)#Y_train.append(0)
             NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1
-        point_difference = game['HTStats'][35] - game['VTStats'][35]
+        point_difference = game['HTStats'][TGSPOINTS] - game['VTStats'][TGSPOINTS]
         temp_y.append(point_difference)
         Y_train.append(temp_y)
         PointDifference[htindex] += point_difference
