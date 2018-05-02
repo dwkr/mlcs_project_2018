@@ -20,6 +20,9 @@ TGSPOINTS = 35 # Team Game Stats Points
 TGSTIMEOFPOSS = 58 # Team Game Stats Time of Possesion
 TGSPENALTY = 59 # Team Game Stats Penalty
 TGSKICKOFFYARD = 39 # Team Game Stats Kick off yard
+TGSFUMBLE = 43 #Team Game Stats Fumbles
+TGSRUSHYARDS = 3 #Team Game Stats Rush Yards
+TGSRUSHATTEMPTS = 2 ##Team Game Rush Attempts
 
 
 def try_parsing_date(text):
@@ -274,8 +277,18 @@ def getFeatures(year):
         HT_Kickoff_yard = game['HTStats'][TGSKICKOFFYARD]
         VT_Kickoff_yard = game['VTStats'][TGSKICKOFFYARD]
         indicator = Indicator[htindex]/(1 + NumberOfMatches[htindex]) - Indicator[vtindex]/(1 + NumberOfMatches[vtindex])
+        HT_fumble = game['HTStats'][TGSFUMBLE]
+        VT_fumble = game['VTStats'][TGSFUMBLE]
+        HT_rushyards = game['HTStats'][TGSRUSHYARDS]
+        VT_rushyards = game['VTStats'][TGSRUSHYARDS]
+        HT_rushattempts = game['HTStats'][TGSRUSHATTEMPTS]
+        VT_rushattempts = game['VTStats'][TGSRUSHATTEMPTS]
+        HT_rushratio = HT_rushyards/ HT_rushattempts
+        VT_rushratio = VT_rushyards/ VT_rushattempts
+        attendance = game['Attendance']
+        duration = game['Duration']
         
-        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard, indicator))
+        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard, indicator, HT_fumble,VT_fumble, HT_rushratio, VT_rushratio, attendance, duration ))
         
         X_train.append(temp)
         if(game['HTStats'][TGSPOINTS] >= game['VTStats'][TGSPOINTS]):
@@ -292,6 +305,7 @@ def getFeatures(year):
         NumberOfMatches[vtindex] = NumberOfMatches[vtindex] + 1
         NumberOfMatches[htindex] = NumberOfMatches[htindex] + 1
     print("X_train size: ", len(X_train))
+    #print("X_train shape: ", X_train.shape)
     print("Y_train size: ", len(Y_train))
 
     return X_train, Y_train 
