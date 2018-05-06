@@ -343,7 +343,7 @@ def getFeatures(year):
         temp.extend((TimeOfPossession[htindex],TimeOfPossession[vtindex],
                      Penalty[htindex],  Penalty[vtindex], 
                      KickoffYard[htindex], KickoffYard[vtindex], 
-                     Indicator[htindex],Indicator[vtindex],
+                     indicator,
                      Fumbles[htindex],Fumbles[vtindex], 
                      RushRatio[htindex] , RushRatio[vtindex] , 
                      PassRatio[htindex] , PassRatio[vtindex]
