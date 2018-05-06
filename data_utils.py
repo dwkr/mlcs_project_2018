@@ -1,4 +1,3 @@
-
 # Core modules
 import csv
 import numpy as np
@@ -23,6 +22,8 @@ TGSKICKOFFYARD = 39 # Team Game Stats Kick off yard
 TGSFUMBLE = 43 #Team Game Stats Fumbles
 TGSRUSHYARDS = 3 #Team Game Stats Rush Yards
 TGSRUSHATTEMPTS = 2 ##Team Game Rush Attempts
+TGSPASSYARDS = 7 #Team Game Stats Pass Yards
+TGSPASSATTEMPTS = 5 ##Team Game Pass Attempts
 
 
 def try_parsing_date(text):
@@ -211,6 +212,20 @@ def getFeatures(year):
     NumberOfMatches = np.zeros(len(TeamList))
     PointDifference = np.zeros(len(TeamList))
     Indicator = np.zeros(len(TeamList))
+    TimeOfPossession = np.zeros(len(TeamList))
+    Penalty = np.zeros(len(TeamList))
+    KickoffYard = np.zeros(len(TeamList))
+    indicator = np.zeros(len(TeamList))
+    Fumbles = np.zeros(len(TeamList))
+    RushYards = np.zeros(len(TeamList))
+    RushAttempts = np.zeros(len(TeamList))
+    RushRatio = np.zeros(len(TeamList))
+    PassYards = np.zeros(len(TeamList))
+    PassAttempts = np.zeros(len(TeamList))
+    PassRatio = np.zeros(len(TeamList))
+    Attendance = np.zeros(len(TeamList))
+    Duration = np.zeros(len(TeamList))
+
     
     #Skip first 100 games
     gamecount = 0
@@ -229,7 +244,33 @@ def getFeatures(year):
         if(game['HTStats'][TGSPOINTS] >= game['VTStats'][TGSPOINTS]):
             NumberOfWins[htindex] = NumberOfWins[htindex] + 1
         else:
-            NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1       
+            NumberOfWins[vtindex] = NumberOfWins[vtindex] + 1 
+        TimeOfPossession[htindex] += game['HTStats'][TGSTIMEOFPOSS]  
+        TimeOfPossession[vtindex] += game['VTStats'][TGSTIMEOFPOSS]
+        Penalty[htindex] += game['HTStats'][TGSPENALTY]
+        Penalty[vtindex] += game['VTStats'][TGSPENALTY]
+        KickoffYard[htindex] += game['HTStats'][TGSKICKOFFYARD]
+        KickoffYard[vtindex] += game['VTStats'][TGSKICKOFFYARD]
+        indicator = Indicator[htindex]/(1 + NumberOfMatches[htindex]) - Indicator[vtindex]/(1 + NumberOfMatches[vtindex])
+        Fumbles[htindex] += game['HTStats'][TGSFUMBLE]
+        Fumbles[vtindex] += game['VTStats'][TGSFUMBLE]
+        RushYards[htindex] += game['HTStats'][TGSRUSHYARDS]
+        RushYards[vtindex] += game['VTStats'][TGSRUSHYARDS]
+        RushAttempts[htindex] += game['HTStats'][TGSRUSHATTEMPTS]
+        RushAttempts[vtindex] += game['VTStats'][TGSRUSHATTEMPTS]
+        RushRatio[htindex] += RushYards[htindex]/ RushAttempts[htindex]
+        RushRatio[htindex] += RushYards[vtindex]/ RushAttempts[vtindex]
+        PassYards[htindex] += game['HTStats'][TGSPASSYARDS]
+        PassYards[vtindex] += game['VTStats'][TGSPASSYARDS]
+        PassAttempts[htindex] += game['HTStats'][TGSPASSATTEMPTS]
+        PassAttempts[vtindex] += game['VTStats'][TGSPASSATTEMPTS]
+        PassRatio[htindex] += PassYards[htindex]/ PassAttempts[htindex]
+        PassRatio[htindex] += PassYards[vtindex]/ PassAttempts[vtindex]
+        
+        #Attendance[htindex] += game['Attendance']
+        #Attendance[vtindex] += game['Attendance']
+        #Duration[htindex] += game['Duration']
+        #Duration[vtindex] += game['Duration']
             
     #win ratios of home team, win ratio of visit team
     X_train = []
@@ -270,25 +311,45 @@ def getFeatures(year):
         
         Indicator[htindex] += game['HTStats'][TGSPOINTS]
         Indicator[vtindex] += game['VTStats'][TGSPOINTS]
-        HT_time_of_poss = game['HTStats'][TGSTIMEOFPOSS]  
-        VT_time_of_poss = game['VTStats'][TGSTIMEOFPOSS]
-        HT_penalty = game['HTStats'][TGSPENALTY]
-        VT_penalty = game['VTStats'][TGSPENALTY]
-        HT_Kickoff_yard = game['HTStats'][TGSKICKOFFYARD]
-        VT_Kickoff_yard = game['VTStats'][TGSKICKOFFYARD]
+        #HT_time_of_poss[htindex] += ['HTStats'][TGSTIMEOFPOSS]  
+        #print("HT_time",HT_time_of_poss)
+        #VT_time_of_poss[vtindex] += game['VTStats'][TGSTIMEOFPOSS]
+        TimeOfPossession[htindex] += game['HTStats'][TGSTIMEOFPOSS]  
+        TimeOfPossession[vtindex] += game['VTStats'][TGSTIMEOFPOSS]
+        Penalty[htindex] += game['HTStats'][TGSPENALTY]
+        Penalty[vtindex] += game['VTStats'][TGSPENALTY]
+        KickoffYard[htindex] += game['HTStats'][TGSKICKOFFYARD]
+        KickoffYard[vtindex] += game['VTStats'][TGSKICKOFFYARD]
         indicator = Indicator[htindex]/(1 + NumberOfMatches[htindex]) - Indicator[vtindex]/(1 + NumberOfMatches[vtindex])
-        HT_fumble = game['HTStats'][TGSFUMBLE]
-        VT_fumble = game['VTStats'][TGSFUMBLE]
-        HT_rushyards = game['HTStats'][TGSRUSHYARDS]
-        VT_rushyards = game['VTStats'][TGSRUSHYARDS]
-        HT_rushattempts = game['HTStats'][TGSRUSHATTEMPTS]
-        VT_rushattempts = game['VTStats'][TGSRUSHATTEMPTS]
-        HT_rushratio = HT_rushyards/ HT_rushattempts
-        VT_rushratio = VT_rushyards/ VT_rushattempts
-        attendance = game['Attendance']
-        duration = game['Duration']
+        Fumbles[htindex] += game['HTStats'][TGSFUMBLE]
+        Fumbles[vtindex] += game['VTStats'][TGSFUMBLE]
+        RushYards[htindex] += game['HTStats'][TGSRUSHYARDS]
+        RushYards[vtindex] += game['VTStats'][TGSRUSHYARDS]
+        RushAttempts[htindex] += game['HTStats'][TGSRUSHATTEMPTS]
+        RushAttempts[vtindex] += game['VTStats'][TGSRUSHATTEMPTS]
+        RushRatio[htindex] += RushYards[htindex]/ RushAttempts[htindex]
+        RushRatio[htindex] += RushYards[vtindex]/ RushAttempts[vtindex]
+        PassYards[htindex] += game['HTStats'][TGSPASSYARDS]
+        PassYards[vtindex] += game['VTStats'][TGSPASSYARDS]
+        PassAttempts[htindex] += game['HTStats'][TGSPASSATTEMPTS]
+        PassAttempts[vtindex] += game['VTStats'][TGSPASSATTEMPTS]
+        PassRatio[htindex] += PassYards[htindex]/ PassAttempts[htindex]
+        PassRatio[htindex] += PassYards[vtindex]/ PassAttempts[vtindex]
+        #Attendance[htindex] += game['Attendance']
+        #Attendance[vtindex] += game['Attendance']
+        #Duration[htindex] += game['Duration']
+        #Duration[vtindex] += game['Duration']
         
-        temp.extend((HT_time_of_poss,VT_time_of_poss,HT_penalty, VT_penalty, HT_Kickoff_yard, VT_Kickoff_yard, indicator, HT_fumble,VT_fumble, HT_rushratio, VT_rushratio, attendance, duration ))
+        temp.extend((TimeOfPossession[htindex],TimeOfPossession[vtindex],
+                     Penalty[htindex],  Penalty[vtindex], 
+                     KickoffYard[htindex], KickoffYard[vtindex], 
+                     Indicator[htindex],Indicator[vtindex],
+                     Fumbles[htindex],Fumbles[vtindex], 
+                     RushRatio[htindex] , RushRatio[vtindex] , 
+                     PassRatio[htindex] , PassRatio[vtindex]
+                     #attendance, 
+                     #duration 
+                    ))
         
         X_train.append(temp)
         if(game['HTStats'][TGSPOINTS] >= game['VTStats'][TGSPOINTS]):
@@ -325,4 +386,3 @@ def createData(SeasonList, path):
     Y_train = np.array(Y_train)
     
     return X_train, Y_train
-
