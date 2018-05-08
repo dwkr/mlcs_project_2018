@@ -24,6 +24,8 @@ TGSRUSHYARDS = 3 #Team Game Stats Rush Yards
 TGSRUSHATTEMPTS = 2 ##Team Game Rush Attempts
 TGSPASSYARDS = 7 #Team Game Stats Pass Yards
 TGSPASSATTEMPTS = 5 ##Team Game Pass Attempts
+TGSGOALMADE = 27 #Team Goals Made
+TGSGOALATTEMPTS = 26 #Team Goal Attempts
 
 
 def try_parsing_date(text):
@@ -225,6 +227,9 @@ def getFeatures(year):
     PassRatio = np.zeros(len(TeamList))
     Attendance = np.zeros(len(TeamList))
     Duration = np.zeros(len(TeamList))
+    TeamGoalsMade = np.zeros(len(TeamList))
+    TeamGoalsAttempts = np.zeros(len(TeamList))
+    TeamGoalRatio = np.zeros(len(TeamList))
 
     
     #Skip first 100 games
@@ -266,6 +271,12 @@ def getFeatures(year):
         PassAttempts[vtindex] += game['VTStats'][TGSPASSATTEMPTS]
         PassRatio[htindex] += PassYards[htindex]/ PassAttempts[htindex]
         PassRatio[htindex] += PassYards[vtindex]/ PassAttempts[vtindex]
+        TeamGoalsMade[htindex] += game['HTStats'][TGSGOALMADE]+1
+        TeamGoalsAttempts[htindex] += game['HTStats'][TGSGOALATTEMPTS]+1
+        TeamGoalRatio[htindex] += TeamGoalsMade[htindex]/TeamGoalsAttempts[htindex]
+        TeamGoalsMade[vtindex] += game['VTStats'][TGSGOALMADE]+1
+        TeamGoalsAttempts[vtindex] += game['VTStats'][TGSGOALATTEMPTS]+1
+        TeamGoalRatio[vtindex] += TeamGoalsMade[vtindex]/TeamGoalsAttempts[vtindex]
         
         #Attendance[htindex] += game['Attendance']
         #Attendance[vtindex] += game['Attendance']
@@ -335,18 +346,26 @@ def getFeatures(year):
         PassAttempts[vtindex] += game['VTStats'][TGSPASSATTEMPTS]
         PassRatio[htindex] += PassYards[htindex]/ PassAttempts[htindex]
         PassRatio[htindex] += PassYards[vtindex]/ PassAttempts[vtindex]
+        TeamGoalsMade[htindex] += game['HTStats'][TGSGOALMADE]+1
+        TeamGoalsAttempts[htindex] += game['HTStats'][TGSGOALATTEMPTS]+1
+        TeamGoalRatio[htindex] += TeamGoalsMade[htindex]/TeamGoalsAttempts[htindex]
+        TeamGoalsMade[vtindex] += game['VTStats'][TGSGOALMADE]+1
+        TeamGoalsAttempts[vtindex] += game['VTStats'][TGSGOALATTEMPTS]+1
+        TeamGoalRatio[vtindex] += TeamGoalsMade[vtindex]/TeamGoalsAttempts[vtindex]
+        
         #Attendance[htindex] += game['Attendance']
         #Attendance[vtindex] += game['Attendance']
         #Duration[htindex] += game['Duration']
         #Duration[vtindex] += game['Duration']
         
-        temp.extend((TimeOfPossession[htindex],TimeOfPossession[vtindex],
-                     Penalty[htindex],  Penalty[vtindex], 
-                     KickoffYard[htindex], KickoffYard[vtindex], 
+        temp.extend((TimeOfPossession[htindex]/(1 + NumberOfMatches[htindex]),TimeOfPossession[vtindex]/(1 + NumberOfMatches[vtindex]),
+                     Penalty[htindex]/(1 + NumberOfMatches[htindex]),  Penalty[vtindex]/(1 + NumberOfMatches[vtindex]), 
+                     KickoffYard[htindex]/(1 + NumberOfMatches[htindex]), KickoffYard[vtindex]/(1 + NumberOfMatches[vtindex]), 
                      indicator,
-                     Fumbles[htindex],Fumbles[vtindex], 
-                     RushRatio[htindex] , RushRatio[vtindex] , 
-                     PassRatio[htindex] , PassRatio[vtindex]
+                     Fumbles[htindex]/(1 + NumberOfMatches[htindex]),Fumbles[vtindex]/(1 + NumberOfMatches[vtindex]), 
+                     RushRatio[htindex]/(1 + NumberOfMatches[htindex]) , RushRatio[vtindex]/(1 + NumberOfMatches[vtindex]) , 
+                     PassRatio[htindex]/(1 + NumberOfMatches[htindex]) , PassRatio[vtindex]/(1 + NumberOfMatches[vtindex]),
+                     TeamGoalRatio[htindex]/(1 + NumberOfMatches[htindex]) , TeamGoalRatio[vtindex]/(1 + NumberOfMatches[vtindex]) 
                      #attendance, 
                      #duration 
                     ))
