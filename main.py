@@ -5,6 +5,8 @@ from data_utils import *
 from Neural_Networks import *
 from log_regression import *
 from svm_baselines import *
+from data_utils2 import *
+
 
 
 
@@ -60,11 +62,14 @@ print("Algo -------->", args.algorithm)
 season_list = [2005,2006,2007,2008,2009,2010,2011]
 #season_list = [2005,2006]
 
-X_DATA,Y_DATA = createData(season_list, args.path_to_data)
+#X_DATA,Y_DATA = createData(season_list, args.path_to_data)
+
+#Considering previous years
+X_DATA,Y_DATA = createData2(season_list, args.path_to_data)
 
 print("X-DATA: ", X_DATA.shape)
 #######PRINT #######
-print("X-DATA", X_DATA[0])
+#print("X-DATA", X_DATA[0])
 
 print("Y-DATA: ", Y_DATA.shape)
 
@@ -72,12 +77,12 @@ print("Y-DATA: ", Y_DATA.shape)
 indicator_col = X_DATA[:,10:11]
 print("ind: ", indicator_col.shape)
 
-X_DATA = X_DATA[:,:2]
-X_DATA = np.concatenate((X_DATA,indicator_col), axis=1)
+X_DATA = X_DATA[:,:]
+#X_DATA = np.concatenate((X_DATA,indicator_col), axis=1)
 print("X-DATA: ", X_DATA.shape)
 
 
-Y_DATA = Y_DATA[:,:1]
+Y_DATA = Y_DATA[:,0:1]
 split_index = int(args.split_ratio * X_DATA.shape[0])
 
 X_test = X_DATA[split_index:]
