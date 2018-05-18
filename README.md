@@ -1,36 +1,16 @@
-                                New York University Machine Learning and Computational Statistics
-                                                   Spring 2018 Project Report
+New York University Machine Learning and Computational Statistics
+DS-GA 1003
+Spring 2018 Project Report
+                  
+PREDICTING RESULT OF NCAA FOOTBALL GAMES
 
+Team Members:
+Tejal Lotlikar
+Diwakar Paliwal
+Kumar Mehta
 
-
-                                             PREDICTING RESULT OF NCAA FOOTBALL GAMES
-
-
-                                                        Team Members:
-                                                        TEJAL LOTLIKAR
-                                                      New York University
-                                           Courant Institute of Mathematical Science
-                                                        tl2482@nyu.edu
-
-                                                        DIWAKAR PALIWAL
-                                                      New York University
-                                           Courant Institute of Mathematical Science
-                                                        dp2757@nyu.edu  
-
-
-                                                        KUMAR MEHTA
-                                                      New York University
-                                           Courant Institute of Mathematical Science
-                                                        kjm627@nyu.edu   
-
-
-
-
-
-
-                                                          Advisor:
-                                                    DAVID FROHARDT-LANE
-
+Advisor:
+DAVID FROHARDT-LANE
 
 
 
