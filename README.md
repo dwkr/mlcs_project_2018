@@ -1,20 +1,20 @@
-#### H6New York University Machine Learning and Computational Statistics
-#### H6DS-GA 1003
-#### H6Spring 2018 Project Report
+###### New York University Machine Learning and Computational Statistics 
+###### DS-GA 1003
+###### Spring 2018 Project Report
                   
-#### H6PREDICTING RESULT OF NCAA FOOTBALL GAMES
+###### PREDICTING RESULT OF NCAA FOOTBALL GAMES
 
-#### H6Team Members:
+#### Team Members:
 TEJAL LOTLIKAR,
 DIWAKAR PALIWAL,
 KUMAR MEHTA
 
-#### H6Advisor:
+#### Advisor:
 DAVID FROHARDT-LANE
 
 
 
-#### H6Abstract
+#### Abstract
 
 We present a sports prediction model that predicts the winning team and average margin of victory in NCAA football games. 
 Our goal is to analyse the performance all games played by both the teams playing current match and predict the winning 
