@@ -1,8 +1,8 @@
-###### New York University Machine Learning and Computational Statistics 
-###### DS-GA 1003
-###### Spring 2018 Project Report
+#### New York University Machine Learning and Computational Statistics 
+#### DS-GA 1003
+#### Spring 2018 Project Report
                   
-###### PREDICTING RESULT OF NCAA FOOTBALL GAMES
+#### PREDICTING RESULT OF NCAA FOOTBALL GAMES
 
 #### Team Members:
 TEJAL LOTLIKAR,
@@ -27,9 +27,9 @@ data features.
 We used cbstats.com dataset containing information on College Football Statistics from 2005 to 2013 for this analysis and 
 prediction model.
 
-#### H6Dataset Link:
+#### Dataset Link:
 https://old.datahub.io/dataset/college-football-statistics-2005-2013 
 
-#### H6Github Link:
+#### Github Link:
 https://github.com/dwkr/mlcs_project_2018 
 
