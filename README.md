@@ -5,9 +5,9 @@ Spring 2018 Project Report
 PREDICTING RESULT OF NCAA FOOTBALL GAMES
 
 Team Members:
-Tejal Lotlikar,
-Diwakar Paliwal,
-Kumar Mehta
+TEJAL LOTLIKAR,
+DIWAKAR PALIWAL,
+KUMAR MEHTA
 
 Advisor:
 DAVID FROHARDT-LANE
