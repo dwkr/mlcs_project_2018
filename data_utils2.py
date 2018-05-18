@@ -382,11 +382,12 @@ def getFeatures(year,TeamList, WinRatio, PointDifference, Indicator, TimeOfPosse
         temp.extend((TimeOfPossession[htindex]/(1 + NumberOfMatches[htindex]),TimeOfPossession[vtindex]/(1 + NumberOfMatches[vtindex]),
                      Penalty[htindex]/(1 + NumberOfMatches[htindex]),  Penalty[vtindex]/(1 + NumberOfMatches[vtindex]), 
                      KickoffYard[htindex]/(1 + NumberOfMatches[htindex]), KickoffYard[vtindex]/(1 + NumberOfMatches[vtindex]), 
-                     indicator,
+                     #indicator,
                      Fumbles[htindex]/(1 + NumberOfMatches[htindex]),Fumbles[vtindex]/(1 + NumberOfMatches[vtindex]), 
                      RushRatio[htindex]/(1 + NumberOfMatches[htindex]) , RushRatio[vtindex]/(1 + NumberOfMatches[vtindex]) , 
                      PassRatio[htindex]/(1 + NumberOfMatches[htindex]) , PassRatio[vtindex]/(1 + NumberOfMatches[vtindex]),
-                     TeamGoalRatio[htindex]/(1 + NumberOfMatches[htindex]) , TeamGoalRatio[vtindex]/(1 + NumberOfMatches[vtindex]) 
+                     TeamGoalRatio[htindex]/(1 + NumberOfMatches[htindex]) , TeamGoalRatio[vtindex]/(1 + NumberOfMatches[vtindex]) ,
+                     indicator
                      #attendance, 
                      #duration 
                     ))
