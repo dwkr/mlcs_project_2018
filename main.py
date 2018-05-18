@@ -66,6 +66,9 @@ season_list = [2005,2006,2007,2008,2009,2010,2011]
 
 #Considering previous years
 X_DATA,Y_DATA = createData2(season_list, args.path_to_data)
+X_UNSEEN, Y_UNSEEN = createData2([2012,2013],args.path_to_data)
+#X_DATA,Y_DATA = createData(season_list, args.path_to_data)
+
 
 print("X-DATA: ", X_DATA.shape)
 #######PRINT #######
@@ -77,12 +80,18 @@ print("Y-DATA: ", Y_DATA.shape)
 indicator_col = X_DATA[:,10:11]
 print("ind: ", indicator_col.shape)
 
-X_DATA = X_DATA[:,:]
+
+#X_DATA = np.delete(X_DATA,4,1)
+#X_DATA = np.delete(X_DATA,4,1)
+#X_DATA = X_DATA[:,:2]
 #X_DATA = np.concatenate((X_DATA,indicator_col), axis=1)
 print("X-DATA: ", X_DATA.shape)
 
 
 Y_DATA = Y_DATA[:,0:1]
+Y_UNSEEN = Y_UNSEEN[:,0:1]
+print("Y_data : ", Y_DATA)
+
 split_index = int(args.split_ratio * X_DATA.shape[0])
 
 X_test = X_DATA[split_index:]
@@ -102,13 +111,34 @@ else:
 
 print("Model Selected",learningModel)
 
-loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = learningModel(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
+loss_train, loss_test, loss_unseen, accuracy_train, accuracy_test, accuracy_unseen, correct_predictions_train, correct_predictions_test, correct_predictions_unseen = learningModel(X_train, Y_train, X_test, Y_test, X_UNSEEN, Y_UNSEEN, args.num_epochs, args.lr)
+
+Y_ones = Y_train[Y_train>0.5]
+Y_zeros = Y_train[Y_train<0.5]
+
+print("Number of ones",Y_ones.shape)
+print("Number of zeros",Y_zeros.shape)
+
+#for i in range(X_train.shape[1]):
+#    loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = learningModel(X_train[:,i].reshape((X_train.shape[0],1)), Y_train, X_test[:,i].reshape((X_test.shape[0],1)), Y_test, args.num_epochs, args.lr)
+    #loss_train, loss_test, accuracy_train, accuracy_test, correct_predictions_train, correct_predictions_test = learningModel(X_train[:,i:i+1].reshape((X_train.shape[0],1)), Y_train, X_test[:,i].reshape((X_test.shape[0],1)), Y_test, args.num_epochs, args.lr)
+#    print("Num of Features", X_train.shape[1])
+#    print("Training Loss: ",loss_train)
+#    print("Test Loss: ",loss_test) 
+#    print("Training Accuracy: ",accuracy_train)
+#    print("Test Accuracy: ",accuracy_test)
+#    print("Correct predictions train: ",correct_predictions_train)
+#    print("Correct predictions test: ",correct_predictions_test)
+
+#outputs = learningModel(X_train, Y_train, X_test, Y_test, args.num_epochs, args.lr)
 
 print("Num of Features", X_train.shape[1])
 print("Training Loss: ",loss_train)
-print("Test Loss: ",loss_test) 
+print("Test Loss: ",loss_test)
+print("Test Unseen: ",loss_unseen)
 print("Training Accuracy: ",accuracy_train)
 print("Test Accuracy: ",accuracy_test)
+print("Unseen Accuracy: ",accuracy_unseen)
 print("Correct predictions train: ",correct_predictions_train)
 print("Correct predictions test: ",correct_predictions_test)
-
+print("Correct predictions unseen: ",correct_predictions_unseen)
